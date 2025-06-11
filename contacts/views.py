@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Contact
 from .serializers import ContactSerializer
+from account.permissions import IsSuperAdminOrReviewer
 
 @swagger_auto_schema(method='get', responses={200: ContactSerializer(many=True)})
 @api_view(['GET'])
@@ -39,7 +40,7 @@ def contact_put(request, pk):
 
 @swagger_auto_schema(method='delete', responses={204: 'No Content'})
 @api_view(['DELETE'])
-@permission_classes([IsAdminUser, IsAuthenticated])
+@permission_classes([IsSuperAdminOrReviewer])
 def contact_delete(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
     contact.delete()

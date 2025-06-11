@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-p3e*8070hq^&ye3y$v&p(d4ky7-dk0%_ua5s*=94+%oh2n69bi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,17 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # THIRD FILE
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'drf_yasg',
+    # MY APPS
     'account',
-    'Users',
     'app_questions',
     'contacts',
     'Requirements',
     'Papers',
     'Publications',
+    'Mainpage'
 ]
 
 MIDDLEWARE = [
@@ -160,8 +162,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 
@@ -212,7 +214,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'mamatovasliddin381@gmail.com'
 # https://myaccount.google.com/apppasswords?rapt=AEjHL4PYdZpsTQqErM5VNV1NzBbxaWGWaAuFbG12GJMlrDId-ycKtnRDq5MSuAg_FmxYqa-gs1_wnVbAFPqwO2hfSOSpRPX0JMIYIr8aRewzquXL0x9t3us
-EMAIL_HOST_PASSWORD = 'skqf xvde kfzt tfmw'
+EMAIL_HOST_PASSWORD = 'uhoo kfbd ieer uxbt'
 # EMAIL_USE_SSL = True
 
-AUTH_USER_MODEL = 'account.UserProfile'
+AUTH_USER_MODEL = 'account.CustomUser'

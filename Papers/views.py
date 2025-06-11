@@ -1,25 +1,50 @@
+from django.db import models
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from .serializers import PaperSerializer
 from .models import Paper
-
+from account.permissions import IsSuperAdminOrReviewer
 
 # Create your views here.
 
-@swagger_auto_schema(method='GET', responses = {200: PaperSerializer(many=True)})
+@swagger_auto_schema(
+    method='GET',
+    manual_parameters=[
+        openapi.Parameter(
+            'search',
+            openapi.IN_QUERY,
+            description="Search by title or author",
+            type=openapi.TYPE_STRING
+        )
+    ],
+    responses={200: PaperSerializer(many=True)}
+)
 @api_view(['GET'])
 def paper_list(request):
-    paper = Paper.objects.all()
-    serializer = PaperSerializer(paper, many=True)
-    return Response(serializer.data)
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        papers = Paper.objects.filter(
+            models.Q(title__icontains=search_query) |
+            models.Q(author__icontains=search_query)
+        )
+    else:
+        papers = Paper.objects.all()
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    result_page = paginator.paginate_queryset(papers, request)
+    serializer = PaperSerializer(result_page, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 @swagger_auto_schema(method='post', responses = {200: PaperSerializer(many=True)})
 @api_view(['POST'])
-@permission_classes([IsAdminUser, IsAuthenticated])
+@permission_classes([IsSuperAdminOrReviewer])
 def paper_create(request):
     paper = Paper.objects.create(**request.data)
     serializer = PaperSerializer(paper)
@@ -27,7 +52,7 @@ def paper_create(request):
 
 @swagger_auto_schema(method='put', request_body=PaperSerializer, responses = {200: PaperSerializer(many=True)})
 @api_view(['PUT'])
-@permission_classes([IsAdminUser, IsAuthenticated])
+@permission_classes([IsSuperAdminOrReviewer])
 def paper_update(request, pk):
     paper = Paper.objects.get(pk=pk)
     serializer = PaperSerializer(paper, data=request.data, partial=True)
@@ -38,7 +63,7 @@ def paper_update(request, pk):
 
 @swagger_auto_schema(method='delete', responses = {200: PaperSerializer(many=True)})
 @api_view(['DELETE'])
-@permission_classes([IsAdminUser, IsAuthenticated])
+@permission_classes([IsSuperAdminOrReviewer])
 def paper_delete(request, pk):
     paper = Paper.objects.get(pk=pk)
     paper.delete()

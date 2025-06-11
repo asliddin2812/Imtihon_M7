@@ -1,8 +1,17 @@
 from django.db import models
-from packaging.tags import Tag
 
 
 # Create your models here.
+
+# class Tags(models.Model):
+#     name = models.CharField(max_length=160)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         db_table = 'tags'
+
 class Publications(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()

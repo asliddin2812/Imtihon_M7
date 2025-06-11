@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from .models import Requirements
 from .serializers import RequirementsSerializer
-# Create your views here.
+
 
 @swagger_auto_schema(method='get', responses={200: RequirementsSerializer(many=True)})
 @api_view(['GET'])
