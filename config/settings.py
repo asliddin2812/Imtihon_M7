@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # THIRD FILE
+    'modeltranslation',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -76,6 +78,16 @@ JAZZMIN_SETTINGS = {
     },
     "order_with_respect_to": ["auth", "your_app_name"],
 }
+
+
+
+LANGUAGES = (
+    ('uz', 'Uzbek'),
+    ('en', 'English'),
+    ('ru', 'Russian'),
+)
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

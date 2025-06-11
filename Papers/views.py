@@ -4,6 +4,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from .serializers import PaperSerializer
@@ -50,16 +51,30 @@ def paper_create(request):
     serializer = PaperSerializer(paper)
     return Response(serializer.data)
 
-@swagger_auto_schema(method='put', request_body=PaperSerializer, responses = {200: PaperSerializer(many=True)})
-@api_view(['PUT'])
-@permission_classes([IsSuperAdminOrReviewer])
+
+@swagger_auto_schema(method='patch', request_body=PaperSerializer, responses={200: PaperSerializer()})
+@swagger_auto_schema(method='put', request_body=PaperSerializer, responses={200: PaperSerializer()})
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsSuperAdminOrReviewer,IsAdminUser,IsSuperAdminOrReviewer])
 def paper_update(request, pk):
     paper = Paper.objects.get(pk=pk)
-    serializer = PaperSerializer(paper, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'PATCH':
+        serializer = PaperSerializer(instance=paper, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'PUT':
+        serializer = PaperSerializer(instance=paper, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 @swagger_auto_schema(method='delete', responses = {200: PaperSerializer(many=True)})
 @api_view(['DELETE'])

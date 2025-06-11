@@ -4,3 +4,4 @@ from .models import Publications
 # Register your models here.
 
 admin.site.register(Publications)
+
