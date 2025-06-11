@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +55,27 @@ INSTALLED_APPS = [
     'Publications',
     'Mainpage'
 ]
+JAZZMIN_SETTINGS = {
+    "site_title": "My Admin Panel",
+    "site_header": "My Project Admin",
+    "site_brand": "Admin Panel",
+    "welcome_sign": "Xush kelibsiz!",
+    "copyright": "My Company",
+    "search_model": "auth.User",
+    "topmenu_links": [
+        {"name": "Bosh sahifa", "url": "/", "permissions": ["auth.view_user"]},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+    "order_with_respect_to": ["auth", "your_app_name"],
+}
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
